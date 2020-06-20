@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <windows.h>
 class stack
 {
 private:
@@ -13,7 +14,7 @@ public:
 	int pop();
 	bool isFull()const;
 	bool isEmpty()const;
-	void display()const;
+	void display(int col,int row)const;
 	int peek()const;
 	void initialize();
 };

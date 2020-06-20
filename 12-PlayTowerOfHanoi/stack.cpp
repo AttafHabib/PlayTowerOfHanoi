@@ -27,16 +27,15 @@ bool stack::isFull()const {
 bool stack::isEmpty()const {
 	return !Toss;
 }
-void stack::display()const {
-	cout << "[";
+void stack::display(int col,int row)const {
 	for (int i = 0; i < Toss; i++)
 	{
-		if (i > 0) {
-			cout << ",";
-		}
+		COORD coord;
+		coord.X = col;
+		coord.Y = row-i;
+		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 		cout << gameStack[i];
 	}
-	cout << "]\n";
 }
 int stack::peek()const {
 	if (Toss > 0) {

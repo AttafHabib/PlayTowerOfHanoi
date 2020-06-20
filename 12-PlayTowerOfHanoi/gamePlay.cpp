@@ -22,19 +22,22 @@ void gamePlay::menu() {
 
         gotoXY(0, 25);
         cout << "Enter Bar to remove element: ";
-        int inputBar;
-        cin >> inputBar;
-        cout << "Enter Bar to add element: ";
         int removalBar;
         cin >> removalBar;
+        cout << "Enter Bar to add element: ";
+        int inputBar;
+        cin >> inputBar;
 
-        bool validPop = !getStackFromNo(inputBar).isEmpty();
+        bool validPop = !(*getStackFromNo(removalBar)).isEmpty();
         bool validPush = false;
         if (validPop) {
-            validPush = checkValidPush(getStackFromNo(removalBar), getStackFromNo(inputBar).peek());
+            validPush = checkValidPush(*getStackFromNo(inputBar), (*getStackFromNo(removalBar)).peek());
         }
         if (validPop && validPush) {
-            getStackFromNo(inputBar).push(getStackFromNo(removalBar).pop());
+            stack *outputst = getStackFromNo(inputBar);
+            stack *inputst = getStackFromNo(removalBar);
+            int valuetopush = (*getStackFromNo(removalBar)).pop();
+                (*outputst).push(valuetopush);
         }
         cout << endl;
         //Game Ends if Bars shifted to any of the other two Bars
@@ -55,15 +58,15 @@ bool gamePlay::checkValidPush(stack obj,int value)const{
     }
     return result;
 }
-stack gamePlay::getStackFromNo(int No)const{
+stack* gamePlay::getStackFromNo(int No)const{
     if (No == 1) {
-        return *leftStack;
+        return leftStack;
     }
     else if (No == 2) {
-        return *middleStack;
+        return middleStack;
     }
     else if (No == 3) {
-        return *rightStack;
+        return rightStack;
     }
     else {
         return NULL;
@@ -94,48 +97,17 @@ void gamePlay::gotoXY(int col, int row)
 void gamePlay::displayBars() {
     //Main Bottom Bar
     //Total Bars
+    stack *obj = NULL;
     for (int i = 0; i < 3; i++) {
         //J = No of rows in one bar
-        int j = 0;
-        if (i == 0) {
-            j = leftStack->Toss;
-            changeColor(4);
-        }
-        else if (i==1) {
-            j = middleStack->Toss;
-            changeColor(2);
-        }
-        else {
-            j = rightStack->Toss;
-            changeColor(3);
-        }
-        int x = 0;
-        //No of Vertical lines in 1 Bar(Rows)
-        for (; j > 0; j--) {
-
-            //No of Horizonatl dash in one line of One Bar (Coloumns of 1 Row)
-            //    -
-            //   ---
-            //  -----
-            // -------
-            //---------
-            //   No of Dashes in Each Line is (LineNo*2) - 1
-
-            for (int k = 0; k < (j*2)-1; k++) {
-                //Every line above starts from one inner coloumn
-                // 20 = starting position
-                // k = No of "-" in single line
-                // x = Space to move before printing every line
-                // i*20 = No of Spaces to leave for every bar( i = 0,1,2 respectively)
-                gotoXY(10 + k+x +(i*35), 20-x);
-                cout << "-";
-            }
-            x++;
-        }
-        changeColor(7);
-        gotoXY(15+(i*35), 23);
-        cout << i+1;
+        changeColor(3 + i);
+        obj = getStackFromNo(i + 1);
+        obj->display(20+(i*35), 20);
         
+        gotoXY(17 + (i * 35), 23);
+        changeColor(6);
+        cout << "Bar "<<i+1;
     }
+    changeColor(7);
     gotoXY(0, 0);
 }
