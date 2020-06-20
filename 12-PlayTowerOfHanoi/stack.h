@@ -3,10 +3,11 @@
 class stack
 {
 private:
-	int Toss;
 	int* gameStack;
 public:
 	int size;
+	int Toss;
+
 	stack(int size);
 	void push(int x);
 	int pop();

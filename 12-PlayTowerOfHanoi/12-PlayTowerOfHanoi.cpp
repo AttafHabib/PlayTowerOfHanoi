@@ -7,5 +7,5 @@
 using namespace std;
 int main()
 {
-    gamePlay obj(5);
+    gamePlay obj(10);
 }

@@ -3,47 +3,46 @@ gamePlay::gamePlay(int size) {
 	initializeGame(size);
 }
 void gamePlay::initializeGame(int size) {
-	stack leftStack(size);
+    leftStack = new stack(size);
+    rightStack = new stack(size);
+    middleStack = new stack(size);
     //Biggest tile below. Smallest on Top
     for (int i = 0; i < size; i++) {
-        leftStack.push(size-i);
+        leftStack->push(size-i);
     }
-	stack rightStack(size);
-	stack middleStack(size);
-	menu(leftStack,middleStack,rightStack);
+	
+	menu();
 }
-void gamePlay::menu(stack left, stack middle, stack right) {
+void gamePlay::menu() {
     bool gameEnd = false;
     while (!gameEnd) {
+        system("CLS");
         cout << "Welcome to Tower Of Hanoi Game." << endl;
-        displayBars(left,middle,right);
+        displayBars();
+
+        gotoXY(0, 25);
         cout << "Enter Bar to remove element: ";
         int inputBar;
         cin >> inputBar;
-        bool validBar = false;
-        if (inputBar == 1) {
-            validBar = checkValidPop(left);
+        cout << "Enter Bar to add element: ";
+        int removalBar;
+        cin >> removalBar;
+
+        bool validPop = !getStackFromNo(inputBar).isEmpty();
+        bool validPush = false;
+        if (validPop) {
+            validPush = checkValidPush(getStackFromNo(removalBar), getStackFromNo(inputBar).peek());
         }
-        else if (inputBar == 2) {
-            validBar = checkValidPop(middle);
-        }
-        else if (inputBar == 3) {
-            validBar = checkValidPop(right);
-        }
-        else {
-            cout << "Invalid Choice. Removal Not Possible" << endl;
-        }
-        cout << endl;
-        if (validBar) {
-            cout << "Enter Bar to add element: ";
-            cin >> inputBar;
+        if (validPop && validPush) {
+            getStackFromNo(inputBar).push(getStackFromNo(removalBar).pop());
         }
         cout << endl;
         //Game Ends if Bars shifted to any of the other two Bars
-        if (middle.isFull()||right.isFull()) {
+        if (middleStack->isFull()||rightStack->isFull()) {
             cout << "Congratulations! You Have Won The Game";
             gameEnd = true;
         }
+        gotoXY(0, 0);
     }
 }
 bool gamePlay::checkValidPush(stack obj,int value)const{
@@ -56,9 +55,21 @@ bool gamePlay::checkValidPush(stack obj,int value)const{
     }
     return result;
 }
-bool gamePlay::checkValidPop(stack obj)const {
-    return obj.pop();
+stack gamePlay::getStackFromNo(int No)const{
+    if (No == 1) {
+        return *leftStack;
+    }
+    else if (No == 2) {
+        return *middleStack;
+    }
+    else if (No == 3) {
+        return *rightStack;
+    }
+    else {
+        return NULL;
+    }
 }
+
 //Changing commandline Color
 void gamePlay::changeColor(int ColorVal) {
 	//0 = Black 8 = Gray
@@ -80,29 +91,51 @@ void gamePlay::gotoXY(int col, int row)
 	coord.Y = row;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
-void gamePlay::displayBars(stack left,stack middle,stack right) {
+void gamePlay::displayBars() {
     //Main Bottom Bar
+    //Total Bars
     for (int i = 0; i < 3; i++) {
-        gotoXY(20+(i*30), 20);
-        cout << "--------------------";
-    }
-    //Red
-    changeColor(4);
-    //LeftBar
-    for (int i = left.size; i > 0; i--) {
+        //J = No of rows in one bar
+        int j = 0;
+        if (i == 0) {
+            j = leftStack->Toss;
+            changeColor(4);
+        }
+        else if (i==1) {
+            j = middleStack->Toss;
+            changeColor(2);
+        }
+        else {
+            j = rightStack->Toss;
+            changeColor(3);
+        }
+        int x = 0;
+        //No of Vertical lines in 1 Bar(Rows)
+        for (; j > 0; j--) {
 
-    }
-    //Green
-    changeColor(2);
-    //Middle Bar
-    for (int i = middle.size; i > 0; i--) {
-    }
-    //Yellow
-    changeColor(6);
-    //Right Bar
-    for (int i = right.size; i > 0; i--) {
+            //No of Horizonatl dash in one line of One Bar (Coloumns of 1 Row)
+            //    -
+            //   ---
+            //  -----
+            // -------
+            //---------
+            //   No of Dashes in Each Line is (LineNo*2) - 1
 
+            for (int k = 0; k < (j*2)-1; k++) {
+                //Every line above starts from one inner coloumn
+                // 20 = starting position
+                // k = No of "-" in single line
+                // x = Space to move before printing every line
+                // i*20 = No of Spaces to leave for every bar( i = 0,1,2 respectively)
+                gotoXY(10 + k+x +(i*35), 20-x);
+                cout << "-";
+            }
+            x++;
+        }
+        changeColor(7);
+        gotoXY(15+(i*35), 23);
+        cout << i+1;
+        
     }
-    //Back to orignal White
-    changeColor(7);
+    gotoXY(0, 0);
 }

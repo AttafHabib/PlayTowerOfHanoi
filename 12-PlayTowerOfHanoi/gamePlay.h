@@ -7,13 +7,16 @@ using namespace std;
 class gamePlay
 {
 private:
+	stack *leftStack;
+	stack *rightStack;
+	stack *middleStack;
 	void initializeGame(int size);
-	void menu(stack left, stack middle, stack right);
+	void menu();
 	bool checkValidPush(stack obj, int  value)const;
-	bool checkValidPop(stack obj)const;
+	stack getStackFromNo(int NO)const;
 	void changeColor(int ColorVal);
 	void gotoXY(int col, int row);
-	void displayBars(stack left,stack middle,stack right);
+	void displayBars();
 public:
 	gamePlay(int size);
 };
